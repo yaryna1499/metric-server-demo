@@ -16,6 +16,15 @@ services:
     ports:
       - "3100:3100"
 
+  tempo:
+    image: grafana/tempo:2.4.1
+    command: [ "--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - loki
+
   grafana:
     image: docker.io/grafana/grafana-oss:11.1.4
     container_name: grafana
@@ -25,6 +34,9 @@ services:
       - loki
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./grafana:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards_config/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./grafana/dashboards:/etc/grafana/dashboards
     restart: unless-stopped
 
   nginx:
