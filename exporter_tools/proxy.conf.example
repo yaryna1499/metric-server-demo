@@ -1,9 +1,0 @@
-server {
-    server_name YOUR-DOMAIN-NAME;
-
-    location /metrics {
-        allow REMOTE_IP_ADDRESS_WHICH_IS_ALLOWED_TO_QUERY_THIS_ENDPOINT;
-        deny all;
-        proxy_pass http://localhost:9100/metrics;
-    }
-}
