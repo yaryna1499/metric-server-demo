@@ -12,11 +12,21 @@ services:
     restart: unless-stopped
 
   tempo:
-    image: grafana/tempo:2.4.1
-    command: [ "--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
+    image: grafana/tempo:latest
     ports:
-      - "4317:4317"
-      - "4318:4318"
+      - "3200:3200"
+      - "4317"
+    command: [ "--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
+    volumes:
+      - ./tempo/tempo-config.yaml:/etc/tempo.yml
+
+  loki:
+    image: grafana/loki:main
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/local-config.yaml
 
   grafana:
     image: docker.io/grafana/grafana-oss:11.1.4
@@ -29,6 +39,9 @@ services:
       - ./grafana/dashboards_config/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
       - ./grafana/dashboards:/etc/grafana/dashboards
     restart: unless-stopped
+    depends_on:
+      - loki
+      - tempo
 
   nginx:
     image: docker.io/library/nginx:1.26.2-alpine
@@ -42,6 +55,18 @@ services:
     restart: unless-stopped
     depends_on:
       - grafana
+
+  otel_collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    ports:
+      - "55690:4317" #grpc
+      - "55691:4318" #http
+    command: ['--config=/etc/otelcol-contrib/config.yaml']
+    volumes:
+      - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml
+    depends_on:
+      - loki
+      - tempo
 
 volumes:
   prometheus-data:
