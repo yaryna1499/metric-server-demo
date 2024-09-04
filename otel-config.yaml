@@ -11,7 +11,7 @@ receivers:
 
 exporters:
   otlphttp/logs:
-    endpoint: "http://172.18.0.4:3100/otlp/v1/logs"
+    endpoint: "http://172.18.0.4:3100/otlp"
     tls:
       insecure: true
   otlp:
