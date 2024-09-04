@@ -1,11 +1,17 @@
 receivers:
   otlp:
     protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
       http:
+        endpoint: "0.0.0.0:4318"
+        cors:
+          allowed_origins:
+            - "*"
 
 exporters:
   otlphttp/logs:
-    endpoint: "http://loki:3100/loki/api/v1/push"
+    endpoint: "http://172.18.0.4:3100/otlp/v1/logs"
     tls:
       insecure: true
   otlp:
