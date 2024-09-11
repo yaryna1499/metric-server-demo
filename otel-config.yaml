@@ -1,22 +1,23 @@
 receivers:
-  otlp:
+  otlp/traces:
     protocols:
       grpc:
-        endpoint: "0.0.0.0:4317"
+        endpoint: "0.0.0.0:4343"
+  otlp/logs:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:9211"
+
 
 exporters:
-  otlphttp/logs:
-    endpoint: http://loki:3100/otlp
+  otlphttp/loki:
+    endpoint: "http://loki:3100/otlp"
     tls:
       insecure: true
-  otlp:
+  otlp/tempo:
     endpoint: "tempo:4317"
     tls:
       insecure: true
-  debug:
-    verbosity: detailed
-    sampling_initial: 5
-    sampling_thereafter: 200
 
 processors:
   # batch metrics before sending to reduce API usage
@@ -25,9 +26,9 @@ processors:
 service:
   pipelines:
     logs:
-      receivers: [otlp]
-      exporters: [otlphttp/logs]
+      receivers: [otlp/logs]
+      exporters: [otlphttp/loki]
     traces:
-      receivers: [otlp]
+      receivers: [otlp/traces]
       processors: [batch]
-      exporters: [otlp]
+      exporters: [otlp/tempo]

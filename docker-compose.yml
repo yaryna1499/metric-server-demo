@@ -14,8 +14,7 @@ services:
   tempo:
     image: grafana/tempo:latest
     ports:
-      - "3200:3200"
-      - "4317"
+      - "4317:4317"
     command: [ "--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--auth.enabled=false" ]
     volumes:
       - ./tempo/tempo-config.yaml:/etc/tempo.yml
@@ -59,8 +58,8 @@ services:
   otel_collector:
     image: otel/opentelemetry-collector-contrib:latest
     ports:
-      - "4343:4317" #grpc
-      - "4344:4318" #http
+      - "4343:4343" # grpc 1 - traces
+      - "9211:9211" # grpc 2 - logs
     command: ['--config=/etc/otelcol-contrib/config.yaml']
     volumes:
       - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml
