@@ -58,8 +58,7 @@ services:
   otel_collector:
     image: otel/opentelemetry-collector-contrib:latest
     ports:
-      - "4343:4343" # grpc 1 - traces
-      - "9211:9211" # grpc 2 - logs
+      - "4343:4343" # grpc
     command: ['--config=/etc/otelcol-contrib/config.yaml']
     volumes:
       - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml
