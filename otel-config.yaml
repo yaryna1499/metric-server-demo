@@ -2,33 +2,32 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: "0.0.0.0:4317"
-      http:
-        endpoint: "0.0.0.0:4318"
-        cors:
-          allowed_origins:
-            - "*"
+        endpoint: localhost:4317
 
 exporters:
   otlphttp/logs:
-    endpoint: "http://loki:3100/otlp"
+    endpoint: http://loki:3100/otlp
     tls:
       insecure: true
   otlp:
-    endpoint: tempo:4317 # tempo container host & port
+    endpoint: tempo:4317
     tls:
       insecure: true
+  debug:
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
 
 processors:
   # batch metrics before sending to reduce API usage
   batch:
 
 service:
-    pipelines:
-        logs:
-            receivers: [otlp]
-            exporters: [otlphttp/logs]
-        traces:
-            receivers: [otlp]
-            processors: [batch]
-            exporters: [otlp]
+  pipelines:
+    logs:
+      receivers: [otlp]
+      exporters: [otlphttp/logs]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
