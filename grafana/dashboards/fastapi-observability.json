@@ -948,7 +948,7 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum by(type) (rate({service_name=\"$app_name\"} | pattern `<date> <time> <type> <logger> <code> [<_>=<trace_id> <_>=<span_id> <_>=<service_name>] - <msg>` | type != \"\" |= \"$log_keyword\" [1m]))",
+          "expr": "sum by(severity_text) (rate({service_name=\"$app_name\"} | pattern `<severity_text> [<_>=<service_name>]` | severity_text != \"\" |= \"$log_keyword\" [1m]))",
           "legendFormat": "{{type}}",
           "queryType": "range",
           "refId": "A"
@@ -975,7 +975,7 @@
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
-        "showTime": false,
+        "showTime": true,
         "sortOrder": "Descending",
         "wrapLogMessage": true
       },
@@ -987,13 +987,13 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "{service_name=\"$app_name\"} | pattern `<date> <time> <type> <logger> <code> [<_>=<trace_id> <_>=<span_id> <_>=<service_name>] - <msg>` | line_format \"{{.service_name}}\\t{{.type}}\\t trace_id={{.trace_id}}\\t {{.msg}}\" |= \"$log_keyword\"",
+          "expr": "{service_name=\"$app_name\"} | pattern `<msg> - <severity_text> <code_filepath> <code_lineno> [<_>=<trace_id> <_>=<span_id> <_>=<service_name>` | line_format \"{{.service_name}}\\t{{.severity_text}}\\t{{.msg}}\\t{{.code_filepath}}:{{.code_lineno}}\\ntrace_id={{.trace_id}}\" |= \"$log_keyword\"",
           "hide": false,
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Log of All FastAPI App",
+      "title": "Logs",
       "type": "logs"
     }
   ],
@@ -1004,10 +1004,9 @@
     "list": [
       {
         "current": {
-          "isNone": true,
           "selected": false,
-          "text": "None",
-          "value": ""
+          "text": "fast_api_app",
+          "value": "fast_api_app"
         },
         "datasource": {
           "type": "prometheus",
@@ -1054,7 +1053,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
