@@ -84,9 +84,12 @@ datasources:
     orgId: 1
     name: CloudWatch
     type: cloudwatch
+    isDefault: false
     jsonData:
       authType: keys
       defaultRegion: us-east-1
     secureJsonData:
       accessKey: ''
       secretKey: ''
+    readOnly: false
+    editable: true
