@@ -88,5 +88,5 @@ datasources:
       authType: keys
       defaultRegion: us-east-1
     secureJsonData:
-      accessKey: '<your access key>'
-      secretKey: '<your secret key>'
+      accessKey: ''
+      secretKey: ''
