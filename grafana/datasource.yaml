@@ -91,6 +91,5 @@ datasources:
     secureJsonData:
       accessKey: ''
       secretKey: ''
-    allowUiUpdates: true
     readOnly: false
     editable: true
