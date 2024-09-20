@@ -29,6 +29,7 @@ datasources:
       httpMethod: POST
     readOnly: false
     editable: true
+
   - uid: tempo
     orgId: 1
     name: Tempo
@@ -57,6 +58,7 @@ datasources:
           - compose_service
     readOnly: false
     editable: true
+
   - uid: loki
     orgId: 1
     name: Loki
@@ -77,3 +79,14 @@ datasources:
           url: $${__value.raw}
     readOnly: false
     editable: true
+
+  - uid: cloudwatch
+    orgId: 1
+    name: CloudWatch
+    type: cloudwatch
+    jsonData:
+      authType: keys
+      defaultRegion: us-east-1
+    secureJsonData:
+      accessKey: '<your access key>'
+      secretKey: '<your secret key>'
