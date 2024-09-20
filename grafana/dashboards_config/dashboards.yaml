@@ -22,5 +22,6 @@ providers:
   type: 'file'
   disableDeletion: true
   editable: true
+  allowUiUpdates: true
   options:
     path: '/etc/grafana/dashboards'
