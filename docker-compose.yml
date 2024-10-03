@@ -1,5 +1,15 @@
 services:
 
+  alertmanager:
+    image: prom/alertmanager:v0.23.0
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - "./alertmanager:/config"
+      - alertmanager-data:/data
+    command: --config.file=/config/alertmanager.yml --log.level=debug
+
   prometheus:
     image: docker.io/prom/prometheus:v2.54.0
     container_name: prometheus
@@ -7,7 +17,7 @@ services:
       - 9090:9090
     command: "--config.file=/etc/prometheus/prometheus.yaml"
     volumes:
-      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - ./prometheus:/etc/prometheus
       - prometheus-data:/prometheus
     restart: unless-stopped
 
@@ -41,6 +51,7 @@ services:
     depends_on:
       - loki
       - tempo
+      - alertmanager
 
   nginx:
     image: docker.io/library/nginx:1.26.2-alpine
@@ -61,13 +72,12 @@ services:
       - "4343:4343" # grpc
     command: ['--config=/etc/otelcol-contrib/config.yaml']
     volumes:
-      - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml
+      - ./otel_collector/otel-config.yaml:/etc/otelcol-contrib/config.yaml
     depends_on:
       - loki
       - tempo
 
 volumes:
   prometheus-data:
-    driver: local
+  alertmanager-data:
   grafana-data:
-    driver: local
